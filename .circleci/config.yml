@@ -53,6 +53,20 @@ jobs:
       - store_artifacts:
           path: ~/repo/tfresult
           destination: tfresult
+  destory:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: destory
+          command: terraform destory -auto-approve
+      - run:
+          name: show
+          command: terraform show -no-color > tfresult
+      - store_artifacts:
+          path: ~/repo/tfresult
+          destination: tfresult          
 
 workflows:
   version: 2
@@ -62,6 +76,10 @@ workflows:
       - plan:
           requires:
             - init
+      - hold-for-apply-approval:
+          type: approval
+          requires:
+            - init
       - apply:
           requires:
             - plan
@@ -69,3 +87,14 @@ workflows:
             branches:
               only: 
                 - master
+      - hold-for-destroy-approval:
+          type: approval
+          requires:
+            - plan
+      - destory:
+          requires:
+            - apply
+          filters:
+            branches:
+              only: 
+                - master                
