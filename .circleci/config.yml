@@ -72,29 +72,24 @@ workflows:
   version: 2
   build_deploy:
     jobs:
-      - init
+      - init:
+          filters:
+            branches:
+              only: master
       - plan:
           requires:
             - init
       - hold-for-apply-approval:
           type: approval
           requires:
-            - init
+            - plan
       - apply:
           requires:
-            - plan
-          filters:
-            branches:
-              only: 
-                - master
+            - hold-for-apply-approval
       - hold-for-destroy-approval:
           type: approval
           requires:
-            - plan
+            - apply
       - destory:
           requires:
-            - apply
-          filters:
-            branches:
-              only: 
-                - master                
+            - hold-for-destroy-approval               
