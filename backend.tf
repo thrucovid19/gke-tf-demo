@@ -1,6 +1,7 @@
 terraform {
   backend "gcs" {
     bucket = "thrucovid19-tfstate"
-    credentials = "./creds/serviceaccount.json"
+    prefix = "terraform/gke-demo-state"
+    credentials = "terraform-deploy.json"
   }
 }
