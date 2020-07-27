@@ -60,7 +60,7 @@ jobs:
           at: ~/repo
       - run:
           name: destory
-          command: terraform destory -auto-approve
+          command: terraform destroy -auto-approve
       - run:
           name: show
           command: terraform show -no-color > tfresult
